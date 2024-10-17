@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart, Crescent Moon, and Rainbow Animation</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #0d335f;
+            margin: 0;
+        }
+        canvas {
+            border: 2px solid white;
+        }
+        .plyr {
+            margin-top: 20px;
+        }
+    </style>
+
+    <!-- Include Plyr CSS -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+</head>
+<body>
+
+<input type="file" id="audio-upload" accept="audio/*" />
+<select id="shape-selector">
+    <option value="heart">Heart</option>
+    <option value="moon">Crescent Moon</option>
+    <option value="rainbow">Rainbow</option>
+</select>
+
+<!-- Audio element for Plyr -->
+<audio id="player" controls></audio>
+
+<!-- Include Plyr JS -->
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+
+<script>
+let amplitude, fft;
+let song;
+let shapes = []; // Array de posicions de les formes
+let numShapes = 10; // Nombre de formes a dibuixar
+let selectedShape = 'heart'; // Forma per defecte
+
+function setup() {
+  let canvas = createCanvas(600, 600);
+  canvas.parent(document.body);
+
+  amplitude = new p5.Amplitude();
+  fft = new p5.FFT();
+
+  // Inicialitzar les formes amb posicions aleatòries
+  for (let i = 0; i < numShapes; i++) {
+    let x = random(width);
+    let y = random(height);
+    shapes.push({x: x, y: y});
+  }
+
+  // Setup file input listener
+  let fileInput = document.getElementById('audio-upload');
+  fileInput.addEventListener('change', handleFileUpload);
+
+  // Dropdown listener
+  let shapeSelector = document.getElementById('shape-selector');
+  shapeSelector.addEventListener('change', function() {
+    selectedShape = this.value;
+  });
+}
+
+function draw() {
+  background('#0d335f');
+
+  if (!song || !song.isPlaying()) {
+    return;
+  }
+
+  let level = amplitude.getLevel();
+  let size = map(level, 0, 1, 0.5, 1.5); // Escala de la mida de la forma
+
+  let spectrum = fft.analyze();
+  let bass = fft.getEnergy("bass");
+  let treble = fft.getEnergy("treble");
+
+  let r = map(bass, 0, 255, 50, 255);
+  let b = map(treble, 0, 255, 50, 255);
+  let g = map(level, 0, 1, 50, 255);
+
+  noFill();
+  stroke(r, g, b);
+  strokeWeight(3);
+
+  // Dibuixar múltiples formes (cors, llunes o arcs de Sant Martí)
+  shapes.forEach(shape => {
+    push();
+    translate(shape.x, shape.y);
+    scale(size);
+
+    if (selectedShape === 'heart') {
+      drawHeart(); // Dibuixa el cor
+    } else if (selectedShape === 'moon') {
+      drawCrescentMoon(); // Dibuixa la lluna creixent
+    } else if (selectedShape === 'rainbow') {
+      drawRainbow(); // Dibuixa l'arc de Sant Martí
+    }
+
+    pop();
+  });
+}
+
+function drawHeart() {
+  beginShape();
+  vertex(0, 30);
+  vertex(15, 0);
+  vertex(30, -10);
+  vertex(45, -10);
+  vertex(60, 0);
+  vertex(75, 30);
+  vertex(37.5, 60);
+  vertex(0, 30);
+  endShape(CLOSE);
+}
+
+function drawCrescentMoon() {
+  // Dibuix de la lluna creixent
+  fill(0);
+  ellipse(0, 0, 50, 100); // Lluna plena
+  fill('#0d335f');
+  ellipse(10, 0, 50, 100); // Ombra per crear la creixent
+}
+
+function drawRainbow() {
+  // Dibuix d'un arc de Sant Martí
+  let radius = 50;
+  let colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF']; // Colors de l'arc de Sant Martí
+
+  for (let i = 0; i < colors.length; i++) {
+    stroke(colors[i]);
+    noFill();
+    arc(0, 0, radius + i * 10, radius + i * 10, PI, TWO_PI); // Dibuixar arcs concèntrics amb diferents colors
+  }
+}
+
+function handleFileUpload(event) {
+  let file = event.target.files[0];
+  if (file && file.type.startsWith('audio/')) {
+    let fileURL = URL.createObjectURL(file);
+
+    // Update Plyr player with the new audio file
+    const audioElement = document.getElementById('player');
+    audioElement.src = fileURL;
+    player.source = {
+      type: 'audio',
+      sources: [{ src: fileURL, type: file.type }]
+    };
+
+    // Load sound for p5.js analysis
+    loadSound(fileURL, soundLoaded);
+  } else {
+    console.error('Please upload a valid audio file');
+  }
+}
+
+function soundLoaded(loadedSong) {
+  if (song && song.isPlaying()) {
+    song.stop();
+  }
+  song = loadedSong;
+  song.play();
+  amplitude.setInput(song);
+  fft.setInput(song);
+}
+</script>
+
+</body>
+</html>
