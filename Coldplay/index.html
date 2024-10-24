@@ -1,36 +1,23 @@
+
 <!DOCTYPE html>
 <html lang="ca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <title>Benvinguts</title>
-    <style>body {
-    padding: 0; /* Elimina l'espai extra al voltant del cos */
-}
-
-.container-fluid {
-    max-width: 100%; /* Assegura que la navbar ocupa tota l'amplada */
-}
-
+    <title>Web de Lucía</title>
+    <style>
     
-    .navbar {
-    padding-left: 0; /* Elimina el padding esquerra de la navbar */
-}
-
-.logo {
-    margin-right: 20px; /* Ajustar el marge si vols separar el logo del text */
-    margin-left: 0; /* Assegurar que no hi hagi marge a l'esquerra */
-}
-
-    
-
+body {
+            padding: 20px; /* Espai extra per als marges laterals */
+        }
 .navbar-brand {
     display: flex;
     align-items: center;
 }
 
-
+.logo {
+    margin-right: 20px; /* Ajusta aquest valor segons el necessari */
 }
 
 .brand-text {
@@ -48,10 +35,10 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
+    <div class="container">
        <a class="navbar-brand d-flex align-items-center" href="#">
-    <img src="logo.png" alt="Logo" width="50" class="logo">
-    <span class="brand-text">Web de Lucía</span>
+    <img src="https://esoriano4pompeu.github.io/logo.png" alt="Logo" width="50" class="logo">
+    <span class="brand-text">Web d'Elna</span>
 </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -61,7 +48,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Inici</a>
+                    <a class="nav-link" href="https://esoriano4pompeu.github.io">Inici</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Tema 1</a>
@@ -70,9 +57,9 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">Projectes</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="https://ldomingu4.github.io/aliment">Conventional o ecològic? 1</a>
-                          <a class="dropdown-item" href="https://ldomingu4.github.io/coldplay">Coldplay</a>
-                        <a class="dropdown-item" href="https://ldomingu4.github.io/moonmusic">Moon Music</a>
+                        <a class="dropdown-item" href="https://esoriano4pompeu.github.io/Aliment">Ecològic?</a>
+                        <a class="dropdown-item" href="https://esoriano4pompeu.github.io/coldplay">Coldplay</a>
+                        <a class="dropdown-item" href="https://esoriano4pompeu.github.io/moonmusic">Moon music</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -86,20 +73,28 @@
 <!-- Contingut principal -->
 <div class="content-container">
     <h1>Projecte Coldplay</h1>
-    <p>Fins al dia 15 de novembre estarem fent un projecte que enviarem al grup de música Coldplay, tots alhora. 
-      Aquest enviament serà un <a href="https://es.wikipedia.org/wiki/PechaKucha">PechaKucha</a></p>
-  <p>Un PechaKucha és una presentació professional que consta de 20 diapositives que dura 20 segons cadascuna, és a dir una mica més de sis minuts. ha de ser molt visual i ha de tenir una mica de codi per explicar el que fem en anglès amb la nostra veu (podem utilizar intel·ligència artificial i traductors per traduir i pronunciar, com Google Translate)<p> 
-    <p>El nostre projecte serà un visualitzador d'àudio en temps real per a Coldplay però personalitzat pel nou àlbum del 4 d'octubre del 2024 anomenat Moon Music, per exemple podem animar una lluna creixent i fer que sigui més gran de tamany si el volum augmenta o que sigui més vermella si el so és més agut i que sigui mes verda si el so és més greu. 
-      A més de la lluna creixent altres figures podrien ser la lluna decreixent i lluna completa. Si la cancó és "A Sky full of stars" s'animaren estrelles i es farán més gran depenent del volum i el color dependra de si és veu greu o mes agut.
-      Si es la cancó de "We pray" posareem el símbol de les mans pregant i és mourán apropant-se i separant-se amb el volum canviant de color, per exemple de blanc a negre depenent del so, agut o greu. Els símbols d'infinit i un arc de Sant Martí també s'utilitzen.
-      <h2>Com ho farem?</h2>
-      <p> Utilitzarem HTML que és un llenguatge de marques <marca></marca>, CSS que és un llenguatge d'estil que ens permet jugar amb el tipus de letra, marges, colors i el llenguatge més important JAVASCRIPT i dintre de JAVASCRIPT utilitzarem
-        <a href="https://editor.p5js.org">p5.js</a>. Primer dibuixarem a mà amb paper milimetrat o a una pàgina web creat pel professor un dibuix que serà relacionat amb Coldplay i que animarem amb música de Coldplay</p> 
-    <p>A continuació veuràs un llistat amb diferents projectes que farem durant el curs:</p>
-    <ul>
-        <li>Creació d'una obra d'art geomètrica interactiva que reaccioni a la meva veu a través d'un micròfon i a diferents tecles del teclat, al ratolí, que faci moviments repetitius amb sin i cos, moviments aleatoris amb random... Utilitzarem p5.js.</li>
-        <li>Aliments ecològics i convencionals amb C++.</li>
-        <li>Contaminació atmosfèrica d'una ciutat catalana amb R.</li> 
+    <p> Fins al dia 15 de novembre estarem fent un projecte que enviarem al grup de música Coldplay. 
+      Aquest enviament serà un  <a href="https://https://es.wikipedia.org/wiki/PechaKucha">PechaKucha</a></p>
+<p>Un PechaKucha és una presentació professional que consta de 20 diapositives que dura 20 segons cadascuna, és a dir,
+  una miqueta més de 6 minuts. Ha de ser molt visual i ha de contenir una mica de codi per explicar el que fem en
+  anglès amb la nostra veu (podem utilitzar intel·ligència artificial i traductor per traduir i per pronunciar, com 
+  Google Translate) </p>
+  <p>El nostre projecte serà un visualitzador d'àudio en temps real per a Coldplay però personalitzat pel nou àlbum del 
+    4 d'octubre de 2024 anomenat Moon Music, per exemple, podem animar una lluna creixent i fer que sigui més gran de
+    mida si el volum augmenta o que sigui més vermella si el so és més agut i que sigui més verda si el so és més greu.
+    A més de la lluna creixent, altres figures podrien ser la lluna decreixent i la lluna completa. Si la cançó és Sky full of stars,
+    s'animaran estrelles i es faran més grans depenent del volum i el color dependrà de si és més greu o més agut. Si és la cançó
+    We pray, posarem el símbol de les mans pregant i es mouran apropant-se i separant-se amb el volum i canviant de color, per exemple,
+    de blanc a negre depenent del so, agut o greu. Els símbols d'infinit i d'un arc de Sant Martí
+    també s'utilitzen. </p>
+  <h2>Com ho farem?</h2>
+  <p>Utilitzarem HTML que és un llenguatge de marques <marca></marca> que, CSS que és un llenguatge d'estils que ens permet jugar 
+    amb el tipus de lletra, marges, colors i el llenguatge més important JAVASCRIPT i dins de JAVASCRIPT utilitzarem 
+  <a href="https://editor.p5js.org">p5.js</a>. Primer dibuixarem a mà amb un paper milimetrat o una pàgina web creat pel 
+    professor un dibuix que serà relacionat amb Coldplay i que animarem amb música de Coldplay.</p>
+  <p>A continuació veuràs un llistat amb diferents projectes que farem durant el curs:</p>
+  <ul>
+    
     </ul>
 </div>
 
