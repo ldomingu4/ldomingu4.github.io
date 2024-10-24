@@ -70,7 +70,7 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">Projectes</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="https://ldomingu4.github.io/aliment">Conventional o ecològic? 1</a>
+                        <a class="dropdown-item" href="https://ldomingu4.github.io/aliment">Ecològic?</a>
                           <a class="dropdown-item" href="https://ldomingu4.github.io/coldplay">Coldplay</a>
                         <a class="dropdown-item" href="https://ldomingu4.github.io/moonmusic">Moon Music</a>
                     </div>
