@@ -715,6 +715,769 @@ function handleFileUpload(event) {
    if (file && file.type.startsWith('audio/')) {
        let fileURL = URL.createObjectURL(file);
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart, Crescent Moon, and Rainbow Animation</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #0d335f;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        canvas {
+            border: 2px solid white;
+            max-width: 100%;
+            height: auto;
+        }
+        .plyr, .default-player {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .default-player {
+            display: none;
+        }
+        /* Custom CSS for default HTML5 audio player */
+        .default-player audio {
+            width: 100%;
+            background-color: #f1f3f4;
+            border-radius: 4px;
+            padding: 5px;
+        }
+        .default-player audio::-webkit-media-controls-panel {
+            background-color: #f1f3f4;
+        }
+        .default-player audio::-webkit-media-controls-current-time-display,
+        .default-player audio::-webkit-media-controls-time-remaining-display {
+            color: #5f6368;
+        }
+        #audio-upload, #shape-selector {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+        #song-title {
+            color: white;
+            margin-top: 10px;
+            font-size: 18px;
+            text-align: center;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+            .controls-container {
+                padding: 10px;
+            }
+            canvas {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+
+    <!-- Include Plyr CSS -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+</head>
+<body>
+<h2 style="color: white;">Coldplay audio player</h2>
+<div class="controls-container">
+    <input type="file" id="audio-upload" accept="audio/*" />
+    <select id="shape-selector">
+        <option value="heart">Coldplay</option>
+        <option value="moon">Crescent Moon</option>
+        <option value="rainbow">Rainbow</option>
+    </select>
+
+    <!-- Display the song title here -->
+    <h2 id="song-title"></h2>
+
+    <!-- Audio element for Plyr -->
+    <audio id="player" class="plyr" controls></audio>
+
+    <!-- Default HTML5 audio player -->
+    <div class="default-player">
+        <audio id="default-player" controls></audio>
+    </div>
+</div>
+
+<!-- Include Plyr JS -->
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+
+<script>
+let amplitude, fft;
+let song;
+let shapes = [];
+let numShapes = 10;
+let selectedShape = 'heart';
+let player;
+
+function setup() {
+    let canvas = createCanvas(600, 600);
+    canvas.parent(document.body);
+    canvas.style('max-width', '100%');
+    canvas.style('height', 'auto');
+
+    amplitude = new p5.Amplitude();
+    fft = new p5.FFT();
+
+    for (let i = 0; i < numShapes; i++) {
+        let x = random(width);
+        let y = random(height);
+        shapes.push({x: x, y: y});
+    }
+
+    let fileInput = document.getElementById('audio-upload');
+    fileInput.addEventListener('change', handleFileUpload);
+
+    let shapeSelector = document.getElementById('shape-selector');
+    shapeSelector.addEventListener('change', function() {
+        selectedShape = this.value;
+    });
+
+    // Initialize Plyr with fallback
+    try {
+        player = new Plyr('#player');
+    } catch (error) {
+        console.error('Plyr initialization failed:', error);
+        document.querySelector('.plyr').style.display = 'none';
+        document.querySelector('.default-player').style.display = 'block';
+    }
+}
+
+function draw() {
+    background('#0d335f');
+
+    if (!song || !song.isPlaying()) {
+      return;
+    }
+
+    let level = amplitude.getLevel();
+    let size = map(level, 0, 1, 0.5, 1.5); // Escala de la mida de la forma
+
+    let spectrum = fft.analyze();
+    let bass = fft.getEnergy("bass");
+    let treble = fft.getEnergy("treble");
+
+    let r = map(bass, 0, 255, 50, 255);
+    let b = map(treble, 0, 255, 50, 255);
+    let g = map(level, 0, 1, 50, 255);
+
+    noFill();
+    stroke(r, g, b);
+    strokeWeight(3);
+    //fill(r,g,b);//aquesta línea nova omple de color rgb i l'anterior feia el contorn.
+    //the previous line fills the shapes below with the rgb colors obtained from sound frequencies (bass and treble) and volume (level) 
+
+    // Dibuixar múltiples formes (cors, llunes o arcs de Sant Martí)
+    shapes.forEach(shape => {
+      push();
+      translate(shape.x, shape.y);
+      scale(size);
+
+      if (selectedShape === 'heart') {
+          drawHeart(); // Dibuixa el cor
+      } else if (selectedShape === 'moon') {
+          drawCrescentMoon(); // Dibuixa la lluna creixent
+      } else if (selectedShape === 'rainbow') {
+          drawRainbow(); // Dibuixa l'arc de Sant Martí
+      }
+
+      pop();
+   });
+}
+
+function drawHeart() {
+  beginShape();//c from coldplay
+vertex(112, 63.775001525878906);
+vertex(105, 63.775001525878906);
+vertex(99, 63.775001525878906);
+vertex(94, 65.7750015258789);
+vertex(89, 68.7750015258789);
+vertex(85, 72.7750015258789);
+vertex(81, 77.7750015258789);
+vertex(78, 83.7750015258789);
+vertex(78, 90.7750015258789);
+vertex(78, 97.7750015258789);
+vertex(80, 102.7750015258789);
+vertex(84, 108.7750015258789);
+vertex(88, 113.7750015258789);
+vertex(92, 115.7750015258789);
+vertex(96, 117.7750015258789);
+vertex(103, 119.7750015258789);
+vertex(110, 118.7750015258789);
+vertex(102, 113.7750015258789);
+vertex(96, 108.7750015258789);
+vertex(92, 102.7750015258789);
+vertex(90, 94.7750015258789);
+vertex(90, 86.7750015258789);
+vertex(93, 80.7750015258789);
+vertex(96, 73.7750015258789);
+vertex(101, 69.7750015258789);
+vertex(106, 66.7750015258789);
+vertex(110, 64.7750015258789);
+endShape(CLOSE);
+    beginShape();//o from coldplay
+vertex(155, 66.7750015258789);
+vertex(147, 71.7750015258789);
+vertex(143, 77.7750015258789);
+vertex(140, 81.7750015258789);
+vertex(139, 87.7750015258789);
+vertex(138, 92.7750015258789);
+vertex(139, 97.7750015258789);
+vertex(140, 102.7750015258789);
+vertex(143, 107.7750015258789);
+vertex(147, 111.7750015258789);
+vertex(152, 115.7750015258789);
+vertex(155, 116.7750015258789);
+vertex(161, 118.7750015258789);
+vertex(167, 118.7750015258789);
+vertex(173, 117.7750015258789);
+vertex(178, 115.7750015258789);
+vertex(184, 112.7750015258789);
+vertex(189, 107.7750015258789);
+vertex(193, 100.7750015258789);
+vertex(195, 91.7750015258789);
+vertex(193, 83.7750015258789);
+vertex(189, 75.7750015258789);
+vertex(183, 69.7750015258789);
+vertex(177, 66.7750015258789);
+vertex(169, 63.775001525878906);
+vertex(161, 63.775001525878906);
+endShape(CLOSE);
+    beginShape();//l from coldplay
+vertex(230, 69.7750015258789);
+vertex(226, 73.7750015258789);
+vertex(224, 77.7750015258789);
+vertex(222, 82.7750015258789);
+vertex(221, 86.7750015258789);
+vertex(221, 91.7750015258789);
+vertex(222, 96.7750015258789);
+vertex(224, 100.7750015258789);
+vertex(226, 104.7750015258789);
+vertex(228, 107.7750015258789);
+vertex(231, 110.7750015258789);
+vertex(234, 112.7750015258789);
+vertex(238, 114.7750015258789);
+vertex(241, 115.7750015258789);
+vertex(246, 117.7750015258789);
+vertex(250, 117.7750015258789);
+vertex(255, 117.7750015258789);
+vertex(260, 115.7750015258789);
+vertex(264, 113.7750015258789);
+vertex(267, 109.7750015258789);
+vertex(261, 110.7750015258789);
+vertex(255, 111.7750015258789);
+vertex(250, 110.7750015258789);
+vertex(244, 108.7750015258789);
+vertex(239, 105.7750015258789);
+vertex(234, 101.7750015258789);
+vertex(230, 96.7750015258789);
+vertex(228, 89.7750015258789);
+vertex(227, 82.7750015258789);
+vertex(228, 77.7750015258789);
+vertex(229, 71.7750015258789);
+endShape(CLOSE);
+    beginShape();//d form coldplay
+vertex(298, 67.7750015258789);
+vertex(302, 69.7750015258789);
+vertex(306, 71.7750015258789);
+vertex(309, 73.7750015258789);
+vertex(312, 77.7750015258789);
+vertex(314, 82.7750015258789);
+vertex(315, 85.7750015258789);
+vertex(316, 90.7750015258789);
+vertex(316, 94.7750015258789);
+vertex(315, 99.7750015258789);
+vertex(313, 104.7750015258789);
+vertex(310, 109.7750015258789);
+vertex(306, 113.7750015258789);
+vertex(301, 116.7750015258789);
+vertex(297, 118.7750015258789);
+vertex(300, 119.7750015258789);
+vertex(305, 119.7750015258789);
+vertex(310, 119.7750015258789);
+vertex(314, 118.7750015258789);
+vertex(320, 115.7750015258789);
+vertex(325, 111.7750015258789);
+vertex(329, 105.7750015258789);
+vertex(332, 98.7750015258789);
+vertex(332, 90.7750015258789);
+vertex(329, 82.7750015258789);
+vertex(325, 75.7750015258789);
+vertex(319, 70.7750015258789);
+vertex(312, 66.7750015258789);
+vertex(306, 65.7750015258789);
+vertex(299, 65.7750015258789);
+vertex(298, 65.7750015258789);
+endShape(CLOSE);
+    beginShape();//p form coldplay
+vertex(358, 79.7750015258789);
+vertex(362, 74.7750015258789);
+vertex(366, 71.7750015258789);
+vertex(371, 69.7750015258789);
+vertex(377, 67.7750015258789);
+vertex(383, 67.7750015258789);
+vertex(388, 68.7750015258789);
+vertex(393, 70.7750015258789);
+vertex(397, 73.7750015258789);
+vertex(401, 77.7750015258789);
+vertex(404, 82.7750015258789);
+vertex(406, 87.7750015258789);
+vertex(407, 92.7750015258789);
+vertex(407, 98.7750015258789);
+vertex(406, 104.7750015258789);
+vertex(404, 109.7750015258789);
+vertex(401, 112.7750015258789);
+vertex(397, 116.7750015258789);
+vertex(399, 108.7750015258789);
+vertex(399, 102.7750015258789);
+vertex(398, 96.7750015258789);
+vertex(395, 90.7750015258789);
+vertex(391, 84.7750015258789);
+vertex(387, 81.7750015258789);
+vertex(383, 78.7750015258789);
+vertex(377, 76.7750015258789);
+vertex(371, 77.7750015258789);
+vertex(365, 78.7750015258789);
+vertex(360, 79.7750015258789);
+endShape(CLOSE);
+    beginShape();//l from coldplay
+vertex(441, 70.7750015258789);
+vertex(437, 73.7750015258789);
+vertex(435, 77.7750015258789);
+vertex(433, 81.7750015258789);
+vertex(432, 85.7750015258789);
+vertex(431, 90.7750015258789);
+vertex(431, 94.7750015258789);
+vertex(433, 99.7750015258789);
+vertex(435, 103.7750015258789);
+vertex(437, 107.7750015258789);
+vertex(441, 112.7750015258789);
+vertex(446, 115.7750015258789);
+vertex(451, 117.7750015258789);
+vertex(455, 118.7750015258789);
+vertex(461, 118.7750015258789);
+vertex(465, 117.7750015258789);
+vertex(470, 116.7750015258789);
+vertex(474, 114.7750015258789);
+vertex(477, 111.7750015258789);
+vertex(471, 111.7750015258789);
+vertex(465, 111.7750015258789);
+vertex(460, 111.7750015258789);
+vertex(455, 110.7750015258789);
+vertex(451, 107.7750015258789);
+vertex(447, 104.7750015258789);
+vertex(445, 101.7750015258789);
+vertex(442, 97.7750015258789);
+vertex(440, 93.7750015258789);
+vertex(439, 87.7750015258789);
+vertex(439, 80.7750015258789);
+vertex(440, 75.7750015258789);
+vertex(442, 70.7750015258789);
+endShape(CLOSE);
+    beginShape();//a from coldplay
+vertex(504, 100.7750015258789);
+vertex(504, 94.7750015258789);
+vertex(505, 88.7750015258789);
+vertex(507, 82.7750015258789);
+vertex(510, 77.7750015258789);
+vertex(514, 74.7750015258789);
+vertex(519, 71.7750015258789);
+vertex(524, 69.7750015258789);
+vertex(529, 68.7750015258789);
+vertex(533, 68.7750015258789);
+vertex(537, 69.7750015258789);
+vertex(542, 71.7750015258789);
+vertex(547, 73.7750015258789);
+vertex(551, 76.7750015258789);
+vertex(553, 80.7750015258789);
+vertex(556, 84.7750015258789);
+vertex(558, 88.7750015258789);
+vertex(559, 92.7750015258789);
+vertex(559, 96.7750015258789);
+vertex(558, 100.7750015258789);
+vertex(555, 97.7750015258789);
+vertex(552, 92.7750015258789);
+vertex(547, 88.7750015258789);
+vertex(542, 84.7750015258789);
+vertex(537, 82.7750015258789);
+vertex(532, 81.7750015258789);
+vertex(526, 81.7750015258789);
+vertex(521, 83.7750015258789);
+vertex(516, 86.7750015258789);
+vertex(512, 90.7750015258789);
+vertex(509, 94.7750015258789);
+vertex(507, 98.7750015258789);
+vertex(505, 100.7750015258789);
+endShape(CLOSE);
+    beginShape();//y from coldplay
+vertex(579, 71.7750015258789);
+vertex(583, 72.7750015258789);
+vertex(586, 73.7750015258789);
+vertex(589, 74.7750015258789);
+vertex(592, 77.7750015258789);
+vertex(595, 80.7750015258789);
+vertex(598, 84.7750015258789);
+vertex(600, 89.7750015258789);
+vertex(601, 94.7750015258789);
+vertex(601, 98.7750015258789);
+vertex(600, 103.7750015258789);
+vertex(598, 107.7750015258789);
+vertex(595, 111.7750015258789);
+vertex(592, 114.7750015258789);
+vertex(589, 116.7750015258789);
+vertex(585, 118.7750015258789);
+vertex(581, 120.7750015258789);
+vertex(585, 121.7750015258789);
+vertex(589, 121.7750015258789);
+vertex(594, 121.7750015258789);
+vertex(599, 119.7750015258789);
+vertex(604, 115.7750015258789);
+vertex(608, 109.7750015258789);
+vertex(611, 102.7750015258789);
+vertex(611, 94.7750015258789);
+vertex(609, 86.7750015258789);
+vertex(606, 80.7750015258789);
+vertex(602, 76.7750015258789);
+vertex(597, 72.7750015258789);
+vertex(592, 70.7750015258789);
+vertex(587, 68.7750015258789);
+vertex(583, 68.7750015258789);
+vertex(579, 68.7750015258789);
+vertex(576, 69.7750015258789);
+endShape(CLOSE);
+    beginShape();//cercle from coldplay
+vertex(617, 70.7750015258789);
+vertex(614, 72.7750015258789);
+vertex(612, 76.7750015258789);
+vertex(612, 79.7750015258789);
+vertex(613, 82.7750015258789);
+vertex(614, 84.7750015258789);
+vertex(616, 85.7750015258789);
+vertex(619, 86.7750015258789);
+vertex(622, 86.7750015258789);
+vertex(625, 85.7750015258789);
+vertex(627, 82.7750015258789);
+vertex(628, 78.7750015258789);
+vertex(627, 74.7750015258789);
+vertex(625, 71.7750015258789);
+vertex(622, 70.7750015258789);
+vertex(619, 69.7750015258789);
+endShape(CLOSE);
+    
+}
+function drawCrescentMoon() {
+  beginShape();//left wing for coldplay
+curveVertex(158, 28.1875);
+curveVertex(165, 35.1875);
+curveVertex(172, 42.1875);
+curveVertex(175, 51.1875);
+curveVertex(178, 60.1875);
+curveVertex(177, 68.1875);
+curveVertex(177, 77.1875);
+curveVertex(177, 85.1875);
+curveVertex(177, 95.1875);
+curveVertex(179, 104.1875);
+curveVertex(181, 109.1875);
+curveVertex(182, 115.1875);
+curveVertex(186, 120.1875);
+curveVertex(188, 123.1875);
+curveVertex(195, 133.1875);
+curveVertex(201, 143.1875);
+curveVertex(210, 153.1875);
+curveVertex(218, 161.1875);
+curveVertex(227, 169.1875);
+curveVertex(234, 175.1875);
+curveVertex(240, 181.1875);
+curveVertex(241, 188.1875);
+curveVertex(241, 196.1875);
+curveVertex(237, 201.1875);
+curveVertex(240, 204.1875);
+curveVertex(241, 211.1875);
+curveVertex(238, 221.1875);
+curveVertex(234, 226.1875);
+curveVertex(227, 226.1875);
+curveVertex(236, 232.1875);
+curveVertex(239, 242.1875);
+curveVertex(243, 252.1875);
+curveVertex(245, 263.1875);
+curveVertex(247, 274.1875);
+curveVertex(248, 286.1875);
+curveVertex(248, 295.1875);
+curveVertex(245, 306.1875);
+curveVertex(238, 308.1875);
+curveVertex(239, 317.1875);
+curveVertex(245, 343.1875);
+curveVertex(242, 352.1875);
+curveVertex(239, 355.1875);
+curveVertex(244, 356.1875);
+curveVertex(248, 365.1875);
+curveVertex(262, 431.1875);
+curveVertex(267, 457.1875);
+curveVertex(270, 474.1875);
+curveVertex(271, 490.1875);
+curveVertex(272, 506.1875);
+curveVertex(274, 530.1875);
+curveVertex(274, 543.1875);
+curveVertex(271, 552.1875);
+curveVertex(269, 560.1875);
+curveVertex(262, 563.1875);
+curveVertex(253, 558.1875);
+curveVertex(255, 552.1875);
+curveVertex(244, 552.1875);
+curveVertex(238, 543.1875);
+curveVertex(230, 536.1875);
+curveVertex(223, 529.1875);
+curveVertex(212, 536.1875);
+curveVertex(204, 533.1875);
+curveVertex(196, 525.1875);
+curveVertex(191, 515.1875);
+curveVertex(188, 503.1875);
+curveVertex(179, 486.1875);
+curveVertex(170, 486.1875);
+curveVertex(149, 456.1875);
+curveVertex(135, 448.1875);
+curveVertex(107, 379.1875);
+curveVertex(95, 343.1875);
+curveVertex(84, 305.1875);
+curveVertex(77, 308.1875);
+curveVertex(70, 301.1875);
+curveVertex(64, 281.1875);
+curveVertex(59, 258.1875);
+curveVertex(51, 239.1875);
+curveVertex(49, 222.1875);
+curveVertex(46, 200.1875);
+curveVertex(45, 187.1875);
+curveVertex(45, 174.1875);
+curveVertex(46, 159.1875);
+curveVertex(44, 142.1875);
+curveVertex(45, 124.1875);
+curveVertex(50, 108.1875);
+curveVertex(58, 91.1875);
+curveVertex(63, 80.1875);
+curveVertex(73, 67.1875);
+curveVertex(80, 57.1875);
+curveVertex(90, 46.1875);
+curveVertex(101, 39.1875);
+curveVertex(110, 32.1875);
+curveVertex(123, 25.1875);
+curveVertex(133, 22.1875);
+curveVertex(143, 22.1875);
+curveVertex(149, 22.1875);
+endShape(CLOSE);
+    beginShape();// rigth wing for coldplay
+curveVertex(342, 180.1875);
+curveVertex(356, 171.1875);
+curveVertex(365, 163.1875);
+curveVertex(376, 152.1875);
+curveVertex(386, 140.1875);
+curveVertex(395, 124.1875);
+curveVertex(400, 108.1875);
+curveVertex(403, 97.1875);
+curveVertex(403, 83.1875);
+curveVertex(403, 66.1875);
+curveVertex(403, 58.1875);
+curveVertex(407, 45.1875);
+curveVertex(419, 35.1875);
+curveVertex(431, 27.1875);
+curveVertex(444, 27.1875);
+curveVertex(460, 27.1875);
+curveVertex(464, 30.1875);
+curveVertex(477, 36.1875);
+curveVertex(487, 44.1875);
+curveVertex(492, 52.1875);
+curveVertex(500, 62.1875);
+curveVertex(514, 80.1875);
+curveVertex(521, 95.1875);
+curveVertex(527, 111.1875);
+curveVertex(533, 132.1875);
+curveVertex(534, 148.1875);
+curveVertex(532, 161.1875);
+curveVertex(524, 169.1875);
+curveVertex(531, 174.1875);
+curveVertex(533, 189.1875);
+curveVertex(527, 192.1875);
+curveVertex(528, 204.1875);
+curveVertex(529, 216.1875);
+curveVertex(529, 230.1875);
+curveVertex(525, 244.1875);
+curveVertex(522, 255.1875);
+curveVertex(516, 263.1875);
+curveVertex(504, 263.1875);
+curveVertex(513, 268.1875);
+curveVertex(513, 281.1875);
+curveVertex(509, 299.1875);
+curveVertex(502, 310.1875);
+curveVertex(493, 311.1875);
+curveVertex(490, 303.1875);
+curveVertex(487, 312.1875);
+curveVertex(487, 323.1875);
+curveVertex(457, 411.1875);
+curveVertex(453, 424.1875);
+curveVertex(444, 440.1875);
+curveVertex(438, 448.1875);
+curveVertex(430, 452.1875);
+curveVertex(422, 444.1875);
+curveVertex(425, 457.1875);
+curveVertex(420, 471.1875);
+curveVertex(415, 478.1875);
+curveVertex(406, 483.1875);
+curveVertex(402, 476.1875);
+curveVertex(391, 496.1875);
+curveVertex(389, 518.1875);
+curveVertex(383, 531.1875);
+curveVertex(368, 533.1875);
+curveVertex(368, 533.1875);
+curveVertex(364, 523.1875);
+curveVertex(357, 533.1875);
+curveVertex(350, 538.1875);
+curveVertex(344, 549.1875);
+curveVertex(336, 552.1875);
+curveVertex(332, 561.1875);
+curveVertex(323, 563.1875);
+curveVertex(312, 550.1875);
+curveVertex(310, 512.1875);
+curveVertex(314, 474.1875);
+curveVertex(316, 440.1875);
+curveVertex(323, 407.1875);
+curveVertex(329, 374.1875);
+curveVertex(333, 352.1875);
+curveVertex(334, 337.1875);
+curveVertex(342, 309.1875);
+curveVertex(332, 302.1875);
+curveVertex(332, 279.1875);
+curveVertex(338, 254.1875);
+curveVertex(347, 230.1875);
+curveVertex(339, 209.1875);
+curveVertex(338, 193.1875);
+endShape(CLOSE);
+}
+
+function drawRainbow() {
+   beginShape();//draw logo
+vertex(405, 18.1875);
+bezierVertex(378, 18.1875, 350, 18.1875, 330, 23.1875);
+bezierVertex(301, 29.1875, 277, 36.1875, 256, 44.1875);
+bezierVertex(242, 52.1875, 228, 62.1875, 211, 73.1875);
+bezierVertex(195, 86.1875, 179, 102.1875, 162, 120.1875);
+bezierVertex(148, 138.1875, 135, 159.1875, 124, 182.1875);
+bezierVertex(113, 206.1875, 107, 229.1875, 101, 252.1875);
+bezierVertex(98, 278.1875, 98, 304.1875, 100, 324.1875);
+bezierVertex(103, 350.1875, 108, 375.1875, 115, 394.1875);
+bezierVertex(123, 413.1875, 132, 432.1875, 144, 451.1875);
+bezierVertex(156, 469.1875, 171, 487.1875, 188, 503.1875);
+bezierVertex(206, 518.1875, 222, 530.1875, 238, 541.1875);
+bezierVertex(259, 550.1875, 273, 558.1875, 295, 567.1875);
+bezierVertex(315, 572.1875, 335, 575.1875, 356, 578.1875);
+bezierVertex(372, 578.1875, 390, 578.1875, 407, 578.1875);
+bezierVertex(423, 575.1875, 437, 572.1875, 453, 568.1875);
+bezierVertex(475, 562.1875, 494, 554.1875, 510, 546.1875);
+bezierVertex(525, 537.1875, 542, 526.1875, 559, 513.1875);
+bezierVertex(573, 500.1875, 590, 483.1875, 604, 467.1875);
+bezierVertex(614, 450.1875, 622, 437.1875, 634, 413.1875);
+bezierVertex(644, 389.1875, 649, 375.1875, 654, 356.1875);
+bezierVertex(659, 328.1875, 659, 308.1875, 661, 292.1875);
+bezierVertex(658, 272.1875, 656, 252.1875, 651, 225.1875);
+bezierVertex(642, 200.1875, 631, 176.1875, 621, 157.1875);
+bezierVertex(611, 140.1875, 593, 116.1875, 571, 93.1875);
+bezierVertex(548, 73.1875, 518, 55.1875, 486, 38.1875);
+endShape(CLOSE);
+    beginShape();
+vertex(111, 230.1875);
+bezierVertex(134, 188.1875, 170, 152.1875, 209, 128.1875);
+bezierVertex(252, 115.1875, 288, 110.1875, 320, 115.1875);
+bezierVertex(352, 123.1875, 380, 135.1875, 405, 154.1875);
+bezierVertex(430, 179.1875, 446, 202.1875, 460, 228.1875);
+bezierVertex(470, 258.1875, 473, 291.1875, 473, 315.1875);
+bezierVertex(468, 345.1875, 456, 375.1875, 441, 404.1875);
+bezierVertex(421, 428.1875, 401, 446.1875, 379, 461.1875);
+bezierVertex(353, 473.1875, 327, 480.1875, 294, 485.1875);
+bezierVertex(273, 485.1875, 244, 480.1875, 217, 472.1875);
+bezierVertex(180, 453.1875, 147, 423.1875, 124, 394.1875);
+bezierVertex(111, 367.1875, 103, 339.1875, 101, 320.1875);
+endShape(CLOSE);
+   }
+}
+        
+   let radius = 50;
+   let colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF']; // Colors de l'arc de Sant Martí
+
+   for (let i = 0; i < colors.length; i++) {
+       stroke(colors[i]);
+       noFill();
+       arc(0, 0, radius + i * 10, radius + i * 10, PI, TWO_PI); // Dibuixar arcs concèntrics amb diferents colors
+   }
+}
+
+function handleFileUpload(event) {
+   let file = event.target.files[0];
+   if (file && file.type.startsWith('audio/')) {
+       let fileURL = URL.createObjectURL(file);
+
+       // Update audio player with the new audio file
+       const audioElement = document.getElementById('player');
+       const defaultAudioElement = document.getElementById('default-player');
+       audioElement.src = fileURL;
+       defaultAudioElement.src = fileURL;
+
+       if (player) {
+           player.source = {
+               type: 'audio',
+               sources: [{ src: fileURL, type: file.type }]
+           };
+       }
+
+       // Update song title
+       const songTitleElement = document.getElementById('song-title');
+       songTitleElement.textContent = file.name;
+
+       // Load sound for p5.js analysis
+       loadSound(fileURL, soundLoaded);
+   } else {
+       console.error('Please upload a valid audio file');
+   }
+}
+
+function soundLoaded(loadedSong) {
+   if (song && song.isPlaying()) {
+       song.stop();
+   }
+   song = loadedSong;
+   song.play();
+   amplitude.setInput(song);
+   fft.setInput(song);
+}
+</script>
+
+</body>
+</html>
+
+
        // Update audio player with the new audio file
        const audioElement = document.getElementById('player');
        const defaultAudioElement = document.getElementById('default-player');
