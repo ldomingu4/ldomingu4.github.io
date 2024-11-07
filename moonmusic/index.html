@@ -20,10 +20,28 @@ o a un costat, els colors de les lletres i fons, el tipues de lletra. A diferèn
         body {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center;/alinia tot en el centre*/
             justify-content: center;
             min-height: 100vh;
-            background-color: #0d335f;
+            background-color: #0d335f;/*color de fons*/
+            /* els colors es poden escriure amb el seu nom en anglès.
+            es poden escriure amb RGB Red, green, blue) i podem posar un sol número, dos 
+            números, tres i quatre núemeros. Si posem un número és l'escala de grisos sent
+            0 negre i 255 blanc (127 seria gris, 200 seria un gris fosc i 50 un gris clar).
+            Si posem dos números el primer és l'escala de grisos i el segon la trànsparència o
+            canal alfa sent 0 transparent i 255 opac (127 semi transparent).
+            Si posem tres numeros son red, green and blue. Per exemple 255,0,0 es el vermell mes fort; 
+            0,255,0 es el ver mes intens; 0,0,255 és el blau més fort. Quants colors diferents tenim? 
+            255x255x255=16.700.000 colors diferents. Si escric "color picker RGB HTML" puc trobar cualsevol color,
+            per exemple, un estil de rosa RGB (255,51,153). Aquest ateix color de rosa el puc posar en números 
+            hexadecimals. Els números hexadecimals son del zero al nou, el deu és A, 11 és B, 12 és C, 13 és E Y 
+            15 es F i així tenim 16 números diferents que es el significat de hexadecimal. El número FF0000 es igual
+            que 255,00; el número 00FF00 és igual que 0,255,0 es igual que 0,255,0; 0000FF és igual que 0,0,255. 
+            Per qué FF és igual a 255? 255=2x20^2+5x10^1+5x10ô=200+50+5 i FF és en base 16 no en base 10, FF és igual a
+            15x16^1+15x16^0=240+15=255. QUant és CACA00? ca=12X16^1+10x16^0=202, per tant CACA00 seria 202,202,0 que es
+            un color groc. 0D335F? 0D=0X16^1+15X16^0=240 33=3X16^1+3X16^^0=51 o sigui, 33 en hexadecimal es 51 en decimal. 
+            5F=5x16^1+15x16^0=95. És a dir, és el color RGB 240,51,95.
+           
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
