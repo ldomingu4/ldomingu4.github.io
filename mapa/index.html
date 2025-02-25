@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heatmap de Contaminació per Dies Concrets</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <style>
+    #map { height: 90vh; width: 100%; }
+    body { font-family: Arial, sans-serif; }
+    .controls { padding: 10px; background-color: #f8f9fa; text-align: center; }
+    .legend { background: white; padding: 10px; position: absolute; bottom: 20px; left: 20px; border: 1px solid #ccc; z-index: 1000; }
+    .gradient-bar { height: 20px; width: 100%; }
+  </style>
+</head>
+<body>
+
+<div class="controls">
+  <label for="dia">Selecciona dia:</label>
+  <select id="dia"></select>
+
+  <label for="contaminant">Selecciona contaminant:</label>
+  <select id="contaminant"></select>
+
+
+</div>
+
+<div id="map"></div>
+<div class="legend" id="legend"></div>
+
+<script>
+const diesConcrets = ["2025-02-14", "2025-01-06"];
+const map = L.map('map').setView([41.3851, 2.1734], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; Institut Pompeu Fabra' }).addTo(map);
+let dades = {};
+let heatLayer;
+let maximsContaminants = {};
+
+function toSubscript(text) {
+  const subs = {
+    '0': '₀',
+    '1': '₁',
+    '2': '₂',
+    '3': '₃',
+    '4': '₄',
+    '5': '₅',
+    '6': '₆',
+    '7': '₇',
+    '8': '₈',
+    '9': '₉'
+  };
+  return text.replace(/\d/g, match => subs[match] || match);
+}
+
+
+function inicialitzaOpcionsDies() {
+  const selectDia = document.getElementById('dia');
+  diesConcrets.forEach(dia => {
+    const opcio = document.createElement('option');
+    opcio.value = dia;
+    opcio.textContent = dia;
+    selectDia.appendChild(opcio);
+  });
+  // Quan es canvia el dia, actualitza les opcions dels contaminants i el heatmap
+  selectDia.addEventListener('change', function() {
+    actualitzaOpcionsContaminants();
+    actualitzaHeatmap();
+  });
+}
+
+function actualitzaOpcionsContaminants() {
+  const diaSeleccionat = document.getElementById('dia').value;
+  const selectContaminant = document.getElementById('contaminant');
+  selectContaminant.innerHTML = '';
+  if (dades[diaSeleccionat]) {
+    Object.keys(dades[diaSeleccionat]).forEach(contaminant => {
+      const opcio = document.createElement('option');
+      opcio.value = contaminant;
+      opcio.textContent = toSubscript(contaminant); // Aplica subíndex si és necessari
+      selectContaminant.appendChild(opcio);
+    });
+  }
+  // Actualitza el heatmap després de modificar els contaminants
+  actualitzaHeatmap();
+}
+
+// Afegeix un event listener al select de contaminants per actualitzar el heatmap quan canviï
+document.getElementById('contaminant').addEventListener('change', actualitzaHeatmap);
+
+
+
+
+function escalaValor(valor, maxValor) {
+  if (valor <= 0) return 0.0;
+  if (valor >= maxValor) return 1.0;
+  return valor / maxValor;
+}
+
+function generaGradient() {
+  return { 0.0: '#0000FF', 0.5: '#FFFF00', 1.0: '#FF0000' };
+}
+
+function actualitzaHeatmap() {
+  const dia = document.getElementById('dia').value;
+  const contaminant = document.getElementById('contaminant').value;
+  if (heatLayer) map.removeLayer(heatLayer);
+
+  const dadesSeleccionades = dades[dia][contaminant];
+  const maxValor = maximsContaminants[contaminant] || 100;
+
+  heatLayer = L.heatLayer(
+    dadesSeleccionades.map(punt => [punt.lat, punt.lng, escalaValor(punt.valor, maxValor)]),
+    { radius: 50, blur: 40, maxZoom: 12, gradient: generaGradient() }
+  ).addTo(map);
+  actualitzaLlegenda(contaminant, maxValor);
+}
+
+function actualitzaLlegenda(contaminant, maxValor) {
+  const legend = document.getElementById('legend');
+  legend.innerHTML = `
+    <strong>${contaminant} (màxim observat: ${maxValor.toFixed(1)} µg/m³)</strong><br>
+    <div class="gradient-bar" style="background: linear-gradient(to right, #0000FF, #FFFF00, #FF0000);"></div>
+    <div style="display: flex; justify-content: space-between;"><span>0</span><span>${(maxValor / 2).toFixed(1)}</span><span>${maxValor.toFixed(1)}+</span></div>
+    <div style="margin-top: 5px;">Blau: Valors baixos</div>
+    <div>Groc: Valors mitjans</div>
+    <div>Vermell: Valors alts</div>
+  `;
+}
+
+function processaDadesCSV(dadesCSV) {
+  const dadesProcessades = {};
+  dadesCSV.forEach(fila => {
+    const dia = fila.data;
+    if (!diesConcrets.includes(dia)) return;
+    const contaminant = fila.contaminant;
+    const lat = parseFloat(fila.lat);
+    const lng = parseFloat(fila.lng);
+    const valor = parseFloat(fila.valor);
+
+    if (!dadesProcessades[dia]) dadesProcessades[dia] = {};
+    if (!dadesProcessades[dia][contaminant]) dadesProcessades[dia][contaminant] = [];
+    dadesProcessades[dia][contaminant].push({ lat, lng, valor });
+
+    if (!maximsContaminants[contaminant] || valor > maximsContaminants[contaminant]) {
+      maximsContaminants[contaminant] = valor;
+    }
+  });
+  return dadesProcessades;
+}
+
+function carregaDades() {
+  Papa.parse('dades.csv', {
+    download: true,
+    header: true,
+    complete: function(results) {
+      dades = processaDadesCSV(results.data);
+      inicialitzaOpcionsDies();
+      actualitzaOpcionsContaminants();
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', carregaDades);
+</script>
+
+</body>
+</html>
