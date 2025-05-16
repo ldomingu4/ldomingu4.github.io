@@ -150,9 +150,11 @@
       strokeWeight(4);
 
       switch (dominant) {
-        case 'happy':
-          stroke (255,0,0)
-beginShape();
+                case 'happy':
+          background(135, 206, 235); // fondo azul cielo claro
+          fill(255, 220, 185); // color carne para la cara
+          stroke(0); // líneas negras en lugar de rojas
+          beginShape();
 vertex(261, 56.1875);
 bezierVertex(237, 63.1875, 223, 65.1875, 213, 78.1875);
 bezierVertex(208, 95.1875, 208, 108.1875, 203, 121.1875);
@@ -169,6 +171,9 @@ bezierVertex(343, 101.1875, 339, 91.1875, 332, 78.1875);
 bezierVertex(319, 66.1875, 303, 58.1875, 278, 58.1875);
 bezierVertex(267, 56.1875, 265, 55.1875, 262, 58.1875);
 endShape();
+
+          fill(255, 150, 180); // boca color rosa
+          stroke(0); // aseguramos líneas negras
           beginShape();//sonrisa
 vertex(234, 236.1875);
 bezierVertex(246, 239.1875, 259, 240.1875, 273, 240.1875);
@@ -176,6 +181,9 @@ bezierVertex(286, 240.1875, 299, 235.1875, 297, 246.1875);
 bezierVertex(287, 253.1875, 273, 255.1875, 259, 255.1875);
 bezierVertex(247, 253.1875, 239, 248.1875, 233, 238.1875);
 endShape();
+
+          fill(255, 220, 185); // nariz color carne
+          stroke(0);
           beginShape();//nariz
 vertex(274, 142.1875);
 bezierVertex(272, 154.1875, 271, 163.1875, 270, 174.1875);
@@ -188,6 +196,9 @@ bezierVertex(245, 217.1875, 249, 208.1875, 250, 204.1875);
 bezierVertex(252, 196.1875, 254, 188.1875, 254, 178.1875);
 bezierVertex(254, 171.1875, 255, 163.1875, 255, 157.1875);
 endShape();
+
+          fill(0); // ojo derecho negro
+          stroke(0);
           beginShape();//ojo derecho
 vertex(283, 161.1875);
 bezierVertex(286, 158.1875, 290, 155.1875, 293, 155.1875);
@@ -198,6 +209,9 @@ bezierVertex(320, 157.1875, 317, 157.1875, 314, 156.1875);
 bezierVertex(310, 155.1875, 306, 155.1875, 301, 156.1875);
 bezierVertex(297, 158.1875, 290, 161.1875, 286, 162.1875);
 endShape();
+
+          fill(0); // ojo izquierdo negro
+          stroke(0);
           beginShape();//ojo izquierdo
 vertex(248, 159.1875);
 bezierVertex(245, 157.1875, 241, 154.1875, 236, 153.1875);
@@ -207,6 +221,7 @@ bezierVertex(222, 160.1875, 226, 158.1875, 231, 157.1875);
 bezierVertex(235, 157.1875, 238, 157.1875, 241, 158.1875);
 endShape();
           break;
+
 
         case 'sad':
           stroke(50,100,200,150); // blau
