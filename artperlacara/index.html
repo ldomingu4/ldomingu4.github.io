@@ -151,9 +151,11 @@
 
       switch (dominant) {
                 case 'happy':
+                 case 'happy':
           background(135, 206, 235); // fondo azul cielo claro
           fill(255, 220, 185); // color carne para la cara
-          stroke(0); // líneas negras en lugar de rojas
+          stroke(0); 
+          strokeWeight(2); // líneas más finas
           beginShape();
 vertex(261, 56.1875);
 bezierVertex(237, 63.1875, 223, 65.1875, 213, 78.1875);
@@ -172,9 +174,11 @@ bezierVertex(319, 66.1875, 303, 58.1875, 278, 58.1875);
 bezierVertex(267, 56.1875, 265, 55.1875, 262, 58.1875);
 endShape();
 
-          fill(255, 150, 180); // boca color rosa
-          stroke(0); // aseguramos líneas negras
-          beginShape();//sonrisa
+          // Unión perfecta entre cabeza y pecho
+          line(262, 288.1875, 262, 290.1875);
+
+          fill(255, 150, 180); // boca
+          beginShape();
 vertex(234, 236.1875);
 bezierVertex(246, 239.1875, 259, 240.1875, 273, 240.1875);
 bezierVertex(286, 240.1875, 299, 235.1875, 297, 246.1875);
@@ -182,9 +186,8 @@ bezierVertex(287, 253.1875, 273, 255.1875, 259, 255.1875);
 bezierVertex(247, 253.1875, 239, 248.1875, 233, 238.1875);
 endShape();
 
-          fill(255, 220, 185); // nariz color carne
-          stroke(0);
-          beginShape();//nariz
+          fill(255, 220, 185); // nariz
+          beginShape();
 vertex(274, 142.1875);
 bezierVertex(272, 154.1875, 271, 163.1875, 270, 174.1875);
 bezierVertex(270, 183.1875, 272, 188.1875, 276, 190.1875);
@@ -197,9 +200,8 @@ bezierVertex(252, 196.1875, 254, 188.1875, 254, 178.1875);
 bezierVertex(254, 171.1875, 255, 163.1875, 255, 157.1875);
 endShape();
 
-          fill(0); // ojo derecho negro
-          stroke(0);
-          beginShape();//ojo derecho
+          fill(0); // ojo derecho
+          beginShape();
 vertex(283, 161.1875);
 bezierVertex(286, 158.1875, 290, 155.1875, 293, 155.1875);
 bezierVertex(294, 153.1875, 300, 152.1875, 303, 152.1875);
@@ -210,9 +212,8 @@ bezierVertex(310, 155.1875, 306, 155.1875, 301, 156.1875);
 bezierVertex(297, 158.1875, 290, 161.1875, 286, 162.1875);
 endShape();
 
-          fill(0); // ojo izquierdo negro
-          stroke(0);
-          beginShape();//ojo izquierdo
+          fill(0); // ojo izquierdo
+          beginShape();
 vertex(248, 159.1875);
 bezierVertex(245, 157.1875, 241, 154.1875, 236, 153.1875);
 bezierVertex(231, 153.1875, 227, 155.1875, 223, 156.1875);
@@ -220,7 +221,9 @@ bezierVertex(220, 158.1875, 217, 161.1875, 219, 161.1875);
 bezierVertex(222, 160.1875, 226, 158.1875, 231, 157.1875);
 bezierVertex(235, 157.1875, 238, 157.1875, 241, 158.1875);
 endShape();
-        beginShape();//pecho y cuello
+
+          fill(255, 220, 185); // pecho del mismo color que la cara
+          beginShape(); // cuello y pecho
 vertex(262, 290.1875);
 bezierVertex(269, 301.1875, 272, 333.1875, 270, 340.1875);
 bezierVertex(253, 350.1875, 239, 360.1875, 228, 367.1875);
@@ -237,10 +240,6 @@ bezierVertex(368, 302.1875, 365, 290.1875, 359, 271.1875);
 bezierVertex(353, 240.1875, 342, 254.1875, 327, 266.1875);
 bezierVertex(309, 276.1875, 293, 282.1875, 276, 287.1875);
 endShape();
-          beginShape();//linia del pecho
-vertex(237, 473.1875);
-endShape();
-          break;
 
 
         case 'sad':
