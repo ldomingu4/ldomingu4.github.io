@@ -151,104 +151,90 @@
       strokeWeight(1);
   
       switch (dominant) {
-                case 'happy':
                case 'happy':
   background(135, 206, 235);
 
   // Sol
   noStroke();
   fill(255, 204, 0);
-  ellipse(80, 80, 100, 100);
-
-  // Rayos del sol
+  ellipse(120, 120, 120, 120);
   stroke(255, 204, 0);
-  strokeWeight(4);
-  for (let a = 0; a < TWO_PI; a += PI / 8) {
-    let x1 = 80 + cos(a) * 60;
-    let y1 = 80 + sin(a) * 60;
-    let x2 = 80 + cos(a) * 80;
-    let y2 = 80 + sin(a) * 80;
+  strokeWeight(3);
+  for (let a = 0; a < TWO_PI; a += PI / 10) {
+    let x1 = 120 + cos(a) * 70;
+    let y1 = 120 + sin(a) * 70;
+    let x2 = 120 + cos(a) * 90;
+    let y2 = 120 + sin(a) * 90;
     line(x1, y1, x2, y2);
   }
 
-  // Figura feliz
+  // Cara
   fill(255, 220, 185);
   stroke(0);
   strokeWeight(2);
   beginShape();
-  vertex(261, 56.1875);
-  bezierVertex(237, 63.1875, 223, 65.1875, 213, 78.1875);
-  bezierVertex(208, 95.1875, 208, 108.1875, 203, 121.1875);
-  bezierVertex(203, 138.1875, 207, 149.1875, 205, 164.1875);
-  bezierVertex(202, 178.1875, 209, 203.1875, 219, 248.1875);
-  bezierVertex(228, 261.1875, 239, 268.1875, 249, 279.1875);
-  bezierVertex(259, 288.1875, 272, 288.1875, 282, 288.1875);
-  bezierVertex(292, 281.1875, 311, 273.1875, 323, 262.1875);
-  bezierVertex(341, 252.1875, 350, 242.1875, 350, 229.1875);
-  bezierVertex(350, 220.1875, 350, 204.1875, 352, 194.1875);
-  bezierVertex(358, 182.1875, 364, 166.1875, 364, 154.1875);
-  bezierVertex(353, 137.1875, 353, 127.1875, 353, 112.1875);
-  bezierVertex(343, 101.1875, 339, 91.1875, 332, 78.1875);
-  bezierVertex(319, 66.1875, 303, 58.1875, 278, 58.1875);
-  bezierVertex(267, 56.1875, 265, 55.1875, 262, 58.1875);
-  endShape();
+  vertex(420, 110);
+  bezierVertex(390, 140, 370, 180, 360, 230);
+  bezierVertex(355, 280, 370, 340, 400, 380);
+  bezierVertex(430, 400, 470, 400, 500, 380);
+  bezierVertex(530, 340, 540, 280, 530, 230);
+  bezierVertex(520, 180, 500, 140, 470, 110);
+  endShape(CLOSE);
 
-  line(262, 288.1875, 262, 290.1875);
+  // Ojos
+  fill(0);
+  ellipse(430, 220, 10, 10);
+  ellipse(490, 220, 10, 10);
 
-  fill(255, 150, 180);
+  // Boca sonriente
+  noFill();
+  stroke(255, 150, 180);
+  strokeWeight(3);
+  arc(460, 270, 40, 20, 0, PI);
+
+  // Nariz
+  fill(255, 220, 185);
+  noStroke();
   beginShape();
-  vertex(234, 236.1875);
-  bezierVertex(246, 239.1875, 259, 240.1875, 273, 240.1875);
-  bezierVertex(286, 240.1875, 299, 235.1875, 297, 246.1875);
-  bezierVertex(287, 253.1875, 273, 255.1875, 259, 255.1875);
-  bezierVertex(247, 253.1875, 239, 248.1875, 233, 238.1875);
-  endShape();
+  vertex(460, 230);
+  bezierVertex(465, 240, 465, 255, 460, 265);
+  bezierVertex(455, 255, 455, 240, 460, 230);
+  endShape(CLOSE);
 
+  // Pelo
+  fill(60, 40, 30);
+  noStroke();
+  beginShape();
+  vertex(400, 110);
+  bezierVertex(350, 160, 340, 300, 380, 420);
+  bezierVertex(370, 500, 360, 580, 390, 600);
+  bezierVertex(420, 580, 430, 520, 430, 450);
+  bezierVertex(440, 530, 480, 530, 490, 450);
+  bezierVertex(490, 520, 500, 580, 530, 600);
+  bezierVertex(570, 580, 560, 500, 550, 420);
+  bezierVertex(590, 300, 580, 160, 520, 110);
+  endShape(CLOSE);
+
+  // Cuerpo / abrigo
+  fill(0, 0, 30);
+  beginShape();
+  vertex(380, 380);
+  bezierVertex(360, 450, 330, 550, 320, 600);
+  bezierVertex(460, 620, 500, 620, 600, 600);
+  bezierVertex(580, 550, 550, 450, 530, 380);
+  endShape(CLOSE);
+
+  // Manos
   fill(255, 220, 185);
   beginShape();
-  vertex(274, 142.1875);
-  bezierVertex(272, 154.1875, 271, 163.1875, 270, 174.1875);
-  bezierVertex(270, 183.1875, 272, 188.1875, 276, 190.1875);
-  bezierVertex(279, 194.1875, 281, 199.1875, 285, 209.1875);
-  bezierVertex(285, 215.1875, 281, 220.1875, 274, 217.1875);
-  bezierVertex(269, 217.1875, 269, 221.1875, 269, 225.1875);
-  bezierVertex(262, 225.1875, 254, 224.1875, 251, 221.1875);
-  bezierVertex(245, 217.1875, 249, 208.1875, 250, 204.1875);
-  bezierVertex(252, 196.1875, 254, 188.1875, 254, 178.1875);
-  bezierVertex(254, 171.1875, 255, 163.1875, 255, 157.1875);
-  endShape();
+  vertex(410, 570);
+  bezierVertex(420, 580, 440, 590, 460, 590);
+  bezierVertex(480, 590, 500, 580, 510, 570);
+  bezierVertex(490, 565, 480, 560, 460, 560);
+  bezierVertex(440, 560, 420, 565, 410, 570);
+  endShape(CLOSE);
 
-  fill(0);
-  beginShape();
-  vertex(283, 161.1875);
-  bezierVertex(286, 158.1875, 290, 155.1875, 293, 155.1875);
-  bezierVertex(294, 153.1875, 300, 152.1875, 303, 152.1875);
-  bezierVertex(307, 151.1875, 310, 151.1875, 315, 152.1875);
-  bezierVertex(318, 155.1875, 322, 156.1875, 322, 157.1875);
-  bezierVertex(320, 157.1875, 317, 157.1875, 314, 156.1875);
-  bezierVertex(310, 155.1875, 306, 155.1875, 301, 156.1875);
-  bezierVertex(297, 158.1875, 290, 161.1875, 286, 162.1875);
-  endShape();
-
-  fill(0);
-  beginShape();
-  vertex(248, 159.1875);
-  bezierVertex(245, 157.1875, 241, 154.1875, 236, 153.1875);
-  bezierVertex(231, 153.1875, 227, 155.1875, 223, 156.1875);
-  bezierVertex(220, 158.1875, 217, 161.1875, 219, 161.1875);
-  bezierVertex(222, 160.1875, 226, 158.1875, 231, 157.1875);
-  bezierVertex(235, 157.1875, 238, 157.1875, 241, 158.1875);
-  endShape();
-
-  fill(255, 220, 185);
-  beginShape();
-  vertex(264, 55.1875);
-  bezierVertex(250, 57.1875, 238, 60.1875, 226, 63.1875);
-  // ... el resto del pelo y cuerpo
-  endShape();
   break;
-
-
         case 'trist':
           stroke(50,100,200,150); // blau
           beginShape();
