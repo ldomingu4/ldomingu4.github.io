@@ -136,13 +136,7 @@
 
       switch (dominant) {
         case 'happy':
-          stroke(255,200,0); // groc
-          beginShape();
-          for (let a = 0; a < TWO_PI; a += PI/8) {
-            let r = 100 + 25 * sin(a * 8);
-            let x = VIRTUAL_W/2 + r * cos(a);
-            let y = VIRTUAL_H/2 + r * sin(a);
-            vertex(x, y); // vèrtex positiu
+          stroke(1, 1, 1); // negre
           }
           endShape(CLOSE);
           beginShape();//contorno cara y pecho
