@@ -137,6 +137,15 @@
       switch (dominant) {
         case 'happy':
           stroke(251, 248, 29); //groc
+          // Fons alegre i acolorit
+noStroke();
+for (let y = 0; y < height; y += 50) {
+  for (let x = 0; x < width; x += 50) {
+    fill(random(180, 255), random(100, 255), random(150, 255), 150);
+    rect(x, y, 50, 50);
+  }
+}
+stroke(251, 248, 29); // manté el color de les línies després del fons
           endShape(CLOSE);
           beginShape();//contorno cara y pecho
 vertex(260, 55.1875);
